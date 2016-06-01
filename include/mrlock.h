@@ -16,7 +16,7 @@
 #define INVALID_HANDLE              (-1)
 #endif // WIN
 
-namespace mr-io {
+namespace mrio {
 
 class MrLock {
 public:
@@ -65,6 +65,6 @@ private:
 
 };
 
-} // namespace mr-io
+} // namespace mrio
 
 #endif // MRLOCK_H_
