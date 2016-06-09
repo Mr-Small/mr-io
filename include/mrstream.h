@@ -4,8 +4,39 @@
 #ifndef MRSTREAM_H_
 #define MRSTREAM_H_
 
-namespace mr-io {
+#include "mrlock.h"
 
-} // namespace mr-io
+namespace mrio {
+
+class MrStream {
+public:
+
+  // Constructor.
+  MrStream();
+
+  // Destructor.
+  virtual ~MrStream();
+
+  // Check open stream.
+  virtual bool isOpen();
+
+  // Open stream.
+  virtual int open(const char *name) = 0;
+
+  // Close stream.
+  virtual void close() = 0;
+
+  // Write stream.
+  virtual int write(const void *data, unsigned int size) = 0;
+
+  // Read stream.
+  virtual int read(void *data, unsigned int size) = 0;
+
+protected:
+  MrLock lock_;
+  bool open_;
+};
+
+} // namespace mrio
 
 #endif // MRSTREAM_H_

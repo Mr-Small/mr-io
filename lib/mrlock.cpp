@@ -77,7 +77,7 @@ bool MrLock::lock() {
   // semaphore lock.
   sembuf_.sem_num = 0;
   sembuf_.sem_op = -1;
-	sembuf_.sem_flg = SEM_UNDO;
+  sembuf_.sem_flg = SEM_UNDO;
 
   if (semop(lockHandle_, &sembuf_, 1) == -1) {
     perror("semop failed.");
