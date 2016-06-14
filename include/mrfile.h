@@ -17,7 +17,7 @@ public:
   virtual ~MrFile();
 
   // Open file.
-  virtual int open(const char *name);
+  virtual int open(const char *name, const char *mode);
 
   // Close file.
   virtual void close();

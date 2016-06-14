@@ -21,7 +21,7 @@ public:
   virtual bool isOpen();
 
   // Open stream.
-  virtual int open(const char *name) = 0;
+  virtual int open(const char *name, const char *mode) = 0;
 
   // Close stream.
   virtual void close() = 0;
