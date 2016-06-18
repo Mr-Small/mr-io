@@ -29,7 +29,7 @@ public:
   virtual int read(void *data, unsigned int size);
 
   // Write file to text.
-  int write(const char* text, ...);
+  int writeText(const char* text, ...);
 
   // Get file size.
   unsigned int getFileSize();

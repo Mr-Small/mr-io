@@ -7,6 +7,7 @@ cmake_minimum_required(VERSION 2.8)
 set(SRC
     mrlock.cpp
     mrstream.cpp
+    mrfile.cpp
 )
 
 include_directories(

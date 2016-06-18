@@ -1,5 +1,6 @@
 // mrfile.cpp
 // author: Mr-Small
+#include <stdarg.h>
 #include "mrfile.h"
 
 namespace mrio {
@@ -31,6 +32,49 @@ void MrFile::close() {
     fp_ = NULL;
   }
   open_ = false;
+}
+
+// Write file.
+int MrFile::write(const void *data, unsigned int size) {
+
+  int ret = -1;
+  if (data && isOpen()) {
+    if (lock_.lock()) {
+      ret = fwrite(data, size, 1, fp_);
+    }
+  }
+  lock_.unlock();
+  return ret;
+}
+
+// Read file.
+int MrFile::read(void *data, unsigned int size) {
+
+  int ret = -1;
+  if (data && isOpen()) {
+    if (lock_.lock()) {
+      ret = fread(data, size, 1, fp_);
+    }
+  }
+  return ret;
+}
+
+// Write file to text.
+int MrFile::writeText(const char* text, ...) {
+
+  int ret = -1;
+  if (text && isOpen()) {
+    va_list vaList;
+    char buff[256] = {0};
+
+    va_start(vaList, text);
+    vsprintf(buff, text, vaList);
+    va_end(vaList);
+
+    unsigned int size = strnlen(buff, 256);
+    ret = write(buff, size);
+  }
+  return ret;
 }
 
 // Get file size.

@@ -15,6 +15,8 @@
 // Invalid handle value.
 #define INVALID_HANDLE              (-1)
 #endif // WIN
+#include <stdio.h>
+#include <string.h>
 
 namespace mrio {
 
