@@ -39,6 +39,7 @@ void MrLock::createHandle() {
 // Delete handle for lock.
 void MrLock::deleteHandle() {
 
+  unlock();
 #if defined(WIN32) || defined(WIN64) || defined(_WIN32) || defined(_WIN64)
   // Check mutex.
   if (lockHandle_ != INVALID_HANDLE) {
@@ -60,6 +61,10 @@ void MrLock::deleteHandle() {
 
 // Lock with handle.
 bool MrLock::lock() {
+
+  if (lock_) {
+    return true;
+  }
 
   if (lockHandle_ == INVALID_HANDLE) {
     perror("lock handle invalid.");
@@ -88,5 +93,26 @@ bool MrLock::lock() {
   return true;
 }
 
+// Unlock.
+void MrLock::unlock() {
+
+  if (!lock_) {
+    return;
+  }
+#if defined(WIN32) || defined(WIN64) || defined(_WIN32) || defined(_WIN64)
+  ReleaseMutex(lockHandle_);
+#else
+  sembuf_.sem_op = 1;
+  if (semop(lockHandle_, &sembuf_, 1) == -1) {
+    perror("semop failed.");
+  }
+#endif // WIN
+  lock_ = false;
+}
+
+// Check locked.
+bool MrLock::isLocked() {
+  return lock_;
+}
 
 } // namespace mrio

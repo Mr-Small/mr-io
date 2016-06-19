@@ -12,4 +12,4 @@ include_directories(
 add_subdirectory(lib)
 
 # Add subdirectory for test.
-#add_subdirectory(test)
+add_subdirectory(test)
