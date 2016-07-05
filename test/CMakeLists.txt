@@ -8,7 +8,8 @@ include_directories(
 )
 
 add_executable(mriotest
-    mrlock_test.cpp)
+    mrlock_test.cpp
+    mrfile_test.cpp)
 
 target_link_libraries(mriotest
     ${GTEST_BOTH_LIBRARIES}

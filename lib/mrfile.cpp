@@ -56,6 +56,7 @@ int MrFile::read(void *data, unsigned int size) {
       ret = fread(data, size, 1, fp_);
     }
   }
+  lock_.unlock();
   return ret;
 }
 
