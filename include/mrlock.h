@@ -5,16 +5,25 @@
 #define MRLOCK_H_
 
 #if defined(WIN32) || defined(WIN64) || defined(_WIN32) || defined(_WIN64)
+/* Windows */
 #include <typeinfo.h>
 // Invalid handle value.
 #define INVALID_HANDLE              NULL
+
 #else
 #include <typeinfo>
 #include <unistd.h>
+#if defined(ANDROID)
+#include <semaphore.h>
+#else
 #include <sys/sem.h>
+#endif // ANDROID
+
 // Invalid handle value.
 #define INVALID_HANDLE              (-1)
+
 #endif // WIN
+
 #include <stdio.h>
 #include <string.h>
 

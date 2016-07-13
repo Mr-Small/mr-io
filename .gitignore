@@ -32,3 +32,4 @@
 
 # Ignore build directory
 build/
+obj/
