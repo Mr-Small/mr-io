@@ -23,6 +23,10 @@ void MrLock::createHandle() {
 #if defined(WIN32) || defined(WIN64) || defined(_WIN32) || defined(_WIN64)
   // Create mutex handle.
   lockHandle_ = CreateMutex(0, TRUE, NULL);
+#elif defined(ANDROID)
+  // Create semaphore.
+  lockHandle_ = new sem_t;
+  sem_init(lockHandle_, 0, 1);
 #else
   // Create semaphore.
   lockHandle_ = semget((key_t)1111, 1, 0666 | IPC_CREAT);
@@ -30,7 +34,7 @@ void MrLock::createHandle() {
     union semuni semunion;
     semunion.val = 1;
     if (semctl(lockHandle_, 0, SETVAL, semunion) == -1) {
-      // TODO falid.
+      perror("create handle failed.");
     }
   }
 #endif // WIIN
@@ -40,22 +44,20 @@ void MrLock::createHandle() {
 void MrLock::deleteHandle() {
 
   unlock();
+  if (lockHandle_ != INVALID_HANDLE) {
 #if defined(WIN32) || defined(WIN64) || defined(_WIN32) || defined(_WIN64)
   // Check mutex.
-  if (lockHandle_ != INVALID_HANDLE) {
     CloseHandle(lockHandle_);
-    lockHandle_ = INVALID_HANDLE;
-  }
+#elif defined(ANDROID)
+    sem_destroy(lockHandle_);
 #else
-
-  if (lockHandle_ != INVALID_HANDLE) {
     union semuni semunion;
     if (semctl(lockHandle_, 0, IPC_RMID, semunion) == -1) {
       perror("delete handle failed.");
     }
+#endif // WIN
     lockHandle_ = INVALID_HANDLE;
   }
-#endif // WIN
   lock_ = false;
 }
 
@@ -78,6 +80,8 @@ bool MrLock::lock() {
     perror("waitforsingleobject wait failed.");
     return false;
   }
+#elif defined(ANDROID)
+  sem_wait(lockHandle_);
 #else
   // semaphore lock.
   sembuf_.sem_num = 0;
@@ -101,6 +105,8 @@ void MrLock::unlock() {
   }
 #if defined(WIN32) || defined(WIN64) || defined(_WIN32) || defined(_WIN64)
   ReleaseMutex(lockHandle_);
+#elif defined(ANDROID)
+  sem_post(lockHandle_);
 #else
   sembuf_.sem_op = 1;
   if (semop(lockHandle_, &sembuf_, 1) == -1) {

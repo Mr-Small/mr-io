@@ -15,12 +15,13 @@
 #include <unistd.h>
 #if defined(ANDROID)
 #include <semaphore.h>
+// Invalid handle value.
+#define INVALID_HANDLE              NULL
 #else
-#include <sys/sem.h>
-#endif // ANDROID
-
 // Invalid handle value.
 #define INVALID_HANDLE              (-1)
+#include <sys/sem.h>
+#endif // ANDROID
 
 #endif // WIN
 
@@ -60,6 +61,9 @@ private:
 #if defined(WIN32) || defined(WIN64) || defined(_WIN32) || defined(_WIN64)
   // Windows platform handle.
   HANDLE lockHandle_;
+#elif defined(ANDROID)
+  // Android platform handle.
+  sem_t *lockHandle_;
 #else
   // Mac Linux etc...
   // struct seminfo
